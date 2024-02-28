@@ -1,21 +1,21 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-/* const svgBoilerplate = ({ shape, shapeColor, logoText, logoColor}) => 
+const svgBoilerplate = ({ shape, logoText, logoColor}) => 
 `
 <svg version="1.1"
-     width="500" height="300"
+     width="300" height="200"
      xmlns="http://www.w3.org/2000/svg">
 
   <rect width="100%" height="100%" fill="white" />
 
-  <circle cx="150" cy="100" r="80" fill="${shapeColor}" />
+ ${shape.render()}
 
-  <text x="150" y="125" font-size="60" text-anchor="middle" fill="${logoColor}">${logoText}</text>
+  <text x="150" y="125" font-size="40" text-anchor="middle" fill="${logoColor}">${logoText}</text>
 
 </svg>
 
-`; */
+`;
 
 
 inquirer
@@ -46,5 +46,23 @@ inquirer
 
     ])
     .then((answers) => {
+        
+        switch(answers.shape){
+            case Triangle:
+                var userShape = new Triangle(answers.shapeColor);
+                break;
+            case Circle:
+                var userShape = new Circle(answers.shapeColor);
+                break;
+            case Square:
+                var userShape = new Square(answers.shapeColor);
+                break;
+        }
 
-    })
+        const svgOut = svgBoilerplate(userShape, answers.logoText, answers.logoColor);
+
+        fs.writeFile(`${answers.shape}.svg`, svgOut, (err) => 
+            err? console.log(err): console.log('File created successfully.')
+        );
+
+    });
